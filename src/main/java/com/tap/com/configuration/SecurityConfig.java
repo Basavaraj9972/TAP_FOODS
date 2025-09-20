@@ -54,8 +54,8 @@ public class SecurityConfig {
                 .requestMatchers("/", "/user/google", "/auth/google", "/auth/user", "/oauth2/**", "/login/oauth2/**",
                                  "/api/user/login", "/auth/login", "/auth/loginByuserNamePassword", "/auth/loginByEmailPassword",
                                  "/auth/loginByEmailPin", "/auth/loginByPhonePin", "/auth/loginByEmail", "/register",
-                                 "/jwt/generate/**","/api/user/send-otp","/auth/SignUp_Existing_User_Checking",
-                                 "/api/user/verify-otp","/auth/RegisterByUserNameEmail","/auth/logout", "/auth/logoutGoogle_Auth","/auth/loginByuserNameEmailPassword",
+                                 "/jwt/generate/**","/api/user/send-otp","/api/user/send-otp-forgetPassword","/auth/SignUp_Existing_User_Checking","/auth/forget-password-send-otp",
+                                 "/api/user/verify-otp","/auth/RegisterByUserNameEmail","/api/user/resetPassword","/chat","/auth/logout", "/auth/logoutGoogle_Auth","/auth/loginByuserNameEmailPassword",
                                  "/api/user/send-otp-Phone","/logout") // Allow logout endpoint
                 .permitAll()
                 .anyRequest().authenticated() // Secure other endpoints

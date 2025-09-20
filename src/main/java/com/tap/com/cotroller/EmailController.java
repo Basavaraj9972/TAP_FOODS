@@ -1,5 +1,7 @@
 package com.tap.com.cotroller;
 
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -38,6 +40,10 @@ public class EmailController {
     @PostMapping("/send-otp")
     public ResponseEntity<String> sendOtp(@RequestParam String email) {
     	return new ResponseEntity<String>(emailService.sendOtp(email), HttpStatus.OK);
+    }
+    @PostMapping("/send-otp-forgetPassword")
+    public ResponseEntity<String> sendOtpForgetpassword(@RequestParam String email) {
+    	return new ResponseEntity<String>(emailService.sendOtpForgetPassword(email), HttpStatus.OK);
     }
     
     @PostMapping("/verify-otp")
@@ -95,8 +101,14 @@ public class EmailController {
     }
     
     @PutMapping("/resetPassword")
-    private ResponseEntity<UserEntity> resetPasswordByEmail(@RequestParam String email, @RequestParam String password) {
-    	return new ResponseEntity<UserEntity>(userServiceDao.resetPasswordByEmail(email, password),HttpStatus.OK);
+    private ResponseEntity<Boolean> resetPasswordByEmail(@RequestBody Map<String, String> loginRequest) {
+    	String email = loginRequest.get("email");
+		String password = loginRequest.get("password");
+		UserEntity userEntity = userServiceDao.resetPasswordByEmail(email, password);
+		if(userEntity != null) {
+			emailService.forgetSuccess(userEntity.getEmail(), userEntity.getUsername());
+		}
+    	return new ResponseEntity<Boolean>(userEntity != null ? true : false,HttpStatus.OK);
     }
     
     @GetMapping("/uniqueRecordByEmail")

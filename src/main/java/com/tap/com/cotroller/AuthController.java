@@ -1,5 +1,6 @@
 package com.tap.com.cotroller;
 import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.Map;
 
@@ -21,6 +22,7 @@ import org.springframework.web.client.RestTemplate;
 
 import com.tap.com.JwtUtil;
 import com.tap.com.model.UserEntity;
+import com.tap.com.service.EmailService;
 import com.tap.com.serviceInf.UserServiceDao;
 
 import jakarta.servlet.http.Cookie;
@@ -37,7 +39,10 @@ public class AuthController {
     
     @Autowired
     private RestTemplate restTemplate; // add this as a bean or manually create
-
+   
+    @Autowired
+    EmailService emailService;
+    
     public AuthController(JwtUtil jwtUtil,UserServiceDao userServiceDao) {
         this.jwtUtil = jwtUtil;
         this.userServiceDao = userServiceDao;
@@ -150,7 +155,9 @@ public class AuthController {
 					.maxAge(Duration.ofMinutes(30)) // Cookie expiry
 					.sameSite("Strict")    // Prevent CSRF attacks
 					.build();
-			
+			LocalDateTime date = LocalDateTime.now();
+			user.setLastLoginDate(date);
+			userServiceDao.saveUser(user);
 			
 			// Create an HTTP-only, Secure cookie for the Username
 //	        ResponseCookie userCookie = ResponseCookie.from("USERNAME", username)
@@ -169,12 +176,44 @@ public class AuthController {
 		return ResponseEntity.ok(Collections.singletonMap("message", "Invalid User"));
 	}
 	
+	@PostMapping("/forget-password-send-otp")
+	public ResponseEntity<?> checkUserSendOTP(@RequestBody Map<String, String> loginRequest, HttpServletResponse response) {
+//	    String username = loginRequest.get("username");
+		System.out.println("API is calling");
+	    String email = loginRequest.get("email");
+	    System.out.println("User email is :" +email);
+//	    loginRequest.get("email");
+
+//	    UserEntity user = userServiceDao.findByEmailUserName(email, username);
+
+//	    if (user == null) {
+	    UserEntity user = userServiceDao.findByEmail(email);
+	    	if(user != null) {
+	        // Call OTP send API
+	        try {
+	            String otpApiUrl = "http://localhost:8080/api/user/send-otp-forgetPassword?email=" + email;
+	            ResponseEntity<String> otpResponse = restTemplate.postForEntity(otpApiUrl, null, String.class);
+	            System.out.println("Otp Respone : "+otpResponse);
+	            if (otpResponse.getStatusCode().is2xxSuccessful()) {
+	            	System.out.println("OTP send successfully ");
+	                return ResponseEntity.ok(Collections.singletonMap("message", "OTP sent to email."));
+	            } else {
+	                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+	                        .body(Collections.singletonMap("message", "Failed to send OTP"));
+	            }
+	        } catch (Exception e) {
+	            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+	                    .body(Collections.singletonMap("message", "Error calling OTP service: " + e.getMessage()));
+	        }
+	    }
+	    return ResponseEntity.ok(Collections.singletonMap("message", "User not exists"));
+	}
 
 	@PostMapping("/SignUp_Existing_User_Checking")
 	public ResponseEntity<?> signUp(@RequestBody Map<String, String> loginRequest, HttpServletResponse response) {
 	    String username = loginRequest.get("username");
 	    String email = loginRequest.get("email");
-	    loginRequest.get("email");
+//	    loginRequest.get("email");
 
 	    UserEntity user = userServiceDao.findByEmailUserName(email, username);
 
@@ -227,8 +266,10 @@ public class AuthController {
 	    if (user == null) {
 	    	user = userServiceDao.findByEmail(email);
 	    	if(user == null) {
-	    		UserEntity userEntity = new UserEntity(username,email,password);
+	    		LocalDateTime date = LocalDateTime.now();
+	    		UserEntity userEntity = new UserEntity(username,email,password,date);
 	    		userServiceDao.saveUser(userEntity);
+	    		emailService.sendWelcomeEmail(email, username);
 	    		return ResponseEntity.ok(Collections.singletonMap("message","Registration Successfull."));
 	    	}
 	    }

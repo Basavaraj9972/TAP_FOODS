@@ -208,11 +208,12 @@ public class UserEntity {
 		this.username = username;
 		this.email = email;
 	}
-	public UserEntity(String username, String email, String password) {
+	public UserEntity(String username, String email, String password,LocalDateTime createdDate) {
 		super();
 		this.username = username;
 		this.email = email;
 		this.password = password;
+		this.createdDate = createdDate;
 	}
     
     
