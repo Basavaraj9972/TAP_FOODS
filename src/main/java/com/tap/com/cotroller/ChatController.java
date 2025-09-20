@@ -24,7 +24,7 @@ class ChatController {
     public ResponseEntity<String> chat(@RequestBody Map<String, Object> requestBody) {
         try {
             // Hardcoded API key for local testing
-            String apiKey = "***REMOVED***";
+            String apiKey = "";
 
             // API URL
             String url = "https://api.groq.com/openai/v1/chat/completions";
