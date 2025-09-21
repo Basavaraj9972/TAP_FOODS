@@ -1,4 +1,4 @@
-package com.tap.com.cotroller;
+package com.tap.com.controller;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Collections;

@@ -56,7 +56,7 @@ public class SecurityConfig {
                                  "/auth/loginByEmailPin", "/auth/loginByPhonePin", "/auth/loginByEmail", "/register",
                                  "/jwt/generate/**","/api/user/send-otp","/api/user/send-otp-forgetPassword","/auth/SignUp_Existing_User_Checking","/auth/forget-password-send-otp",
                                  "/api/user/verify-otp","/auth/RegisterByUserNameEmail","/api/user/resetPassword","/chat","/auth/logout", "/auth/logoutGoogle_Auth","/auth/loginByuserNameEmailPassword",
-                                 "/api/user/send-otp-Phone","/logout") // Allow logout endpoint
+                                 "/api/user/send-otp-Phone","/api/payment/**","/logout") // Allow logout endpoint
                 .permitAll()
                 .anyRequest().authenticated() // Secure other endpoints
             )

@@ -35,6 +35,12 @@
         <id>twilio</id>
         <url>https://maven.twilio.com</url>
     </repository>
+  <repository>
+    <id>razorpay</id>
+    <url>https://maven.pkg.github.com/razorpay/razorpay-java</url>
+  </repository>
+
+
 	</repositories>
 
 	<dependencies>
@@ -125,6 +131,20 @@
 		    <artifactId>google-api-client</artifactId>
 		    <version>1.33.0</version>
 		</dependency>
+		<dependency>
+    		<groupId>com.razorpay</groupId>
+    		<artifactId>razorpay-java</artifactId>
+    		<version>1.4.4</version> <!-- or the latest -->
+		</dependency>
+		 <dependency>
+        	<groupId>jakarta.servlet</groupId>
+        	<artifactId>jakarta.servlet-api</artifactId>
+        	<version>6.0.0</version>
+        	<scope>provided</scope>
+    	</dependency>
+
+
+
 
 				<!-- Spring Web (MVC) -->
 		

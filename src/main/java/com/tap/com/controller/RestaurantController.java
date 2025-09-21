@@ -1,4 +1,4 @@
-package com.tap.com.cotroller;
+package com.tap.com.controller;
 
 import java.util.List;
 
